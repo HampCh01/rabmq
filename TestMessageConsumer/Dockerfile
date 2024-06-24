@@ -1,5 +1,5 @@
 # Dockerfile for C# Consumer
-FROM mcr.microsoft.com/dotnet/runtime:7.0
+FROM mcr.microsoft.com/dotnet/runtime:8.0
 
 WORKDIR /app
 COPY out .

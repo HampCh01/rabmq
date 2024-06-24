@@ -1,20 +1,20 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: my-app
+  name: spider-test
 spec:
-  replicas: 1  # Start with zero replicas
+  replicas: 0  # Start with zero replicas
   selector:
     matchLabels:
-      app: my-app
+      app: spider-test
   template:
     metadata:
       labels:
-        app: my-app
+        app: spider-test
     spec:
       containers:
       - name: spi-con
-        image: mqcons:latest  # Replace with your container image
+        image: mqcons:1.1  # Replace with your container image
         imagePullPolicy: Never
         resources:
           requests:

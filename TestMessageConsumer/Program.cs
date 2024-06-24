@@ -10,7 +10,8 @@ using k8s.Models;
 public class Message
 {
     public string Spider { get; set; }
-    public Dictionary<string, string> Params { get; set; }
+    public Dictionary<string, string> Input { get; set; }
+    public Dictionary<string, string> Args { get; set; }
 }
 
 class Program
@@ -22,7 +23,7 @@ class Program
 
         var factory = new ConnectionFactory()
         {
-            HostName = "10.98.109.205",
+            HostName = "production-rabbitmqcluster.default.svc.cluster.local",
             Port = 5672,
             UserName = "guest",
             Password = "guest"
@@ -52,9 +53,9 @@ class Program
             }
 
             var arglist = new List<string>();
-            if (msg.Params != null)
+            if (msg.Args != null)
             {
-                foreach (var param in msg.Params)
+                foreach (var param in msg.Args)
                 {
                     arglist.Add("-a");
                     arglist.Add($"{param.Key}={param.Value}");
@@ -69,7 +70,7 @@ class Program
             {
                 ApiVersion = "batch/v1",
                 Kind = "Job",
-                Metadata = new V1ObjectMeta { Name = $"run-echospider-{uid}" },
+                Metadata = new V1ObjectMeta { Name = $"run-crashdocs-{uid}" },
                 Spec = new V1JobSpec
                 {
                     Template = new V1PodTemplateSpec
@@ -80,10 +81,14 @@ class Program
                             {
                                 new V1Container
                                 {
-                                    Name = "echospider",
-                                    Image = "scrapyecho:latest",
+                                    Name = "crashdocs",
+                                    Image = "crashdocs:1.0",
                                     ImagePullPolicy = "Never",
                                     Args = arglist,
+                                    Env = new List<V1EnvVar>
+                                    {
+                                        new V1EnvVar { Name = "SPIDER_INPUT", Value = JsonSerializer.Serialize(msg.Input) }
+                                    }
                                 }
                             },
                             RestartPolicy = "Never"

@@ -1,17 +1,20 @@
 apiVersion: keda.sh/v1alpha1
 kind: ScaledObject
 metadata:
-  name: my-app-scaledobject
+  name: spider-test-scaledobject
 spec:
   scaleTargetRef:
-    name: my-app  # Deployment name
+    name: spider-test  # Deployment name
   pollingInterval: 30  # Interval to check the metric
   cooldownPeriod:  300  # Period to wait before scaling down
-  minReplicaCount: 1
-  maxReplicaCount: 50  # Maximum number of replicas
+  minReplicaCount: 0
+  maxReplicaCount: 20  # Maximum number of replicas
   triggers:
   - type: rabbitmq  # Replace with your event source
     metadata:
-      connection: amqp://guest:guest@10.98.109.205:5672/vhost  # Environment variable with the connection string
+      host: amqp://production-rabbitmqcluster.default.svc.cluster.local  # Environment variable with the connection string
+      username: guest  # RabbitMQ username
+      password: guest  # RabbitMQ password
+      port: "5672"  # RabbitMQ port
       queueName: scrapy_queue  # Replace with your queue name
-      queueLength: "10"  # Scale for each message
+      queueLength: "5"  # Scale for each message

@@ -6,14 +6,15 @@ using RabbitMQ.Client;
 public class Message
 {
     public string Spider { get; set; }
-    public Dictionary<string, string> Params { get; set; }
+    public Dictionary<string, string> Input { get; set; }
+    public Dictionary<string, string> Args { get; set; }
 }
 
 class Program
 {
     static void Main(string[] args)
     {
-        for (int i = 0; i < 100; i++)
+        for (int i = 0; i < 20; i++)
         {
             SendMessage(i);
         }
@@ -29,10 +30,10 @@ class Program
 
         var message = new Message
         {
-            Spider = "example_spider",
-            Params = new Dictionary<string, string>
+            Spider = "crashdocs",
+            Input = JsonSerializer.Deserialize<Dictionary<string, string>>(""),
+            Args = new Dictionary<string, string>
             {
-                { "input", "SpiderME" },
                 { "spiderarg2", iteration.ToString() }
             }
         };
