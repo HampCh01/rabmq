@@ -14,7 +14,12 @@ spec:
     spec:
       containers:
       - name: spi-con
-        image: mqcons:1.1  # Replace with your container image
+        image: mqcons:1.2  # Replace with your container image
+        envFrom:
+        - configMapRef:
+            name: spider-env-config
+        - secretRef:
+            name: spider-env-secret
         imagePullPolicy: Never
         resources:
           requests:

@@ -10,6 +10,16 @@
   <ItemGroup>
     <PackageReference Include="KubernetesClient" Version="14.0.2" />
     <PackageReference Include="RabbitMQ.Client" Version="6.8.1" />
+    <PackageReference Include="System.Data.SqlClient" Version="4.8.6" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Reference Include="C3MSFramework">
+      <HintPath>.\@Dependencies\OKC.DLL.C3MSFramework.dll</HintPath>
+    </Reference>
+    <Reference Include="C3MSFramework.DataAccess">
+      <HintPath>.\@Dependencies\OKC.DLL.C3MSFramework.DataAccess.dll</HintPath>
+    </Reference>
   </ItemGroup>
 
 </Project>

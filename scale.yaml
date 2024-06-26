@@ -12,9 +12,9 @@ spec:
   triggers:
   - type: rabbitmq  # Replace with your event source
     metadata:
-      host: amqp://production-rabbitmqcluster.default.svc.cluster.local  # Environment variable with the connection string
-      username: guest  # RabbitMQ username
-      password: guest  # RabbitMQ password
+      host:   # Environment variable with the connection string
+      username:   # RabbitMQ username
+      password:   # RabbitMQ password
       port: "5672"  # RabbitMQ port
-      queueName: scrapy_queue  # Replace with your queue name
+      queueName:   # Replace with your queue name
       queueLength: "5"  # Scale for each message

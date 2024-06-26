@@ -1,5 +1,8 @@
 bin
 out
 obj
+.vscode
 .vs
 venv
+*secret.yaml
+@dependencies

@@ -1,11 +1,8 @@
-﻿using System;
-using System.Text;
-using System.Text.Json;
-using System.Diagnostics;
+﻿using System.Text.Json;
 using RabbitMQ.Client;
-using RabbitMQ.Client.Events;
 using k8s;
 using k8s.Models;
+using C3MSFramework;
 
 public class Message
 {
@@ -16,26 +13,29 @@ public class Message
 
 class Program
 {
+    static readonly string RABBIT_HOST = Environment.GetEnvironmentVariable("RABBITMQ_HOST") ?? string.Empty;
+    static readonly string RABBIT_PORT = Environment.GetEnvironmentVariable("RABBITMQ_PORT") ?? string.Empty;
+    static readonly string QUEUE_NAME = Environment.GetEnvironmentVariable("RABBITMQ_QUEUE") ?? string.Empty;
+    static readonly string IMAGE_NAME = Environment.GetEnvironmentVariable("IMAGE_NAME") ?? string.Empty;
+    static readonly string RABBIT_USER = Environment.GetEnvironmentVariable("RABBITMQ_USER") ?? string.Empty;
+    static readonly string RABBIT_PASS = Environment.GetEnvironmentVariable("RABBITMQ_PASSWORD") ?? string.Empty;
     static async Task Main(string[] args)
     {
-        string rabbitMqHost = Environment.GetEnvironmentVariable("RABBITMQ_HOST") ?? "production-rabbitmqcluster";
-        string queueName = Environment.GetEnvironmentVariable("RABBITMQ_QUEUE") ?? "scrapy_queue";
-
         var factory = new ConnectionFactory()
         {
-            HostName = "production-rabbitmqcluster.default.svc.cluster.local",
-            Port = 5672,
-            UserName = "guest",
-            Password = "guest"
+            HostName = RABBIT_HOST,
+            Port = RABBIT_PORT == string.Empty ? 5672 : int.Parse(RABBIT_PORT),
+            UserName = RABBIT_USER,
+            Password = RABBIT_PASS
         };
         using var connection = factory.CreateConnection();
         using var channel = connection.CreateModel();
 
-        channel.QueueDeclare(queue: queueName, durable: false, exclusive: false, autoDelete: false, arguments: null);
+        channel.QueueDeclare(queue: QUEUE_NAME, durable: false, exclusive: false, autoDelete: false, arguments: null);
 
         while (true)
         {
-            var result = channel.BasicGet(queueName, autoAck: false);
+            var result = channel.BasicGet(QUEUE_NAME, autoAck: false);
             if (result == null)
             {
                 Console.WriteLine("No messages in the queue");
@@ -52,25 +52,16 @@ class Program
                 continue;
             }
 
-            var arglist = new List<string>();
-            if (msg.Args != null)
-            {
-                foreach (var param in msg.Args)
-                {
-                    arglist.Add("-a");
-                    arglist.Add($"{param.Key}={param.Value}");
-                }
-            }
-
 
             var config = KubernetesClientConfiguration.InClusterConfig();
             var client = new Kubernetes(config);
+            var biname = IMAGE_NAME.Split(':')[0];
 
             var job = new V1Job
             {
                 ApiVersion = "batch/v1",
                 Kind = "Job",
-                Metadata = new V1ObjectMeta { Name = $"run-crashdocs-{uid}" },
+                Metadata = new V1ObjectMeta { Name = $"run-{biname}-{uid}" },
                 Spec = new V1JobSpec
                 {
                     Template = new V1PodTemplateSpec
@@ -81,13 +72,13 @@ class Program
                             {
                                 new V1Container
                                 {
-                                    Name = "crashdocs",
-                                    Image = "crashdocs:1.0",
+                                    Name = biname,
+                                    Image = IMAGE_NAME,
                                     ImagePullPolicy = "Never",
-                                    Args = arglist,
                                     Env = new List<V1EnvVar>
                                     {
-                                        new V1EnvVar { Name = "SPIDER_INPUT", Value = JsonSerializer.Serialize(msg.Input) }
+                                        new V1EnvVar { Name = "SPIDER_INPUT", Value = JsonSerializer.Serialize(msg.Input) },
+                                        new V1EnvVar { Name = "FTP_PATH", Value = msg.Args["spiderarg2"] }
                                     }
                                 }
                             },

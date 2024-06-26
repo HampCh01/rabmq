@@ -9,6 +9,25 @@
 
   <ItemGroup>
     <PackageReference Include="RabbitMQ.Client" Version="6.8.1" />
+    <PackageReference Include="System.Data.SqlClient" Version="4.8.6" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Reference Include="C3MSFramework">
+      <HintPath>.\@Dependencies\OKC.DLL.C3MSFramework.dll</HintPath>
+    </Reference>
+    <Reference Include="C3MSFramework.DataAccess">
+      <HintPath>.\@Dependencies\OKC.DLL.C3MSFramework.DataAccess.dll</HintPath>
+    </Reference>
+    <Reference Include="C3MSFramework.Utilities">
+      <HintPath>.\@Dependencies\OKC.DLL.C3MSFramework.Utilities.dll</HintPath>
+    </Reference>
+    <Reference Include="C3MSFramework.Encryption">
+      <HintPath>.\@Dependencies\OKC.DLL.C3MSFramework.Encryption.dll</HintPath>
+    </Reference>
+    <Reference Include="C3MSFramework.ExceptionManager">
+      <HintPath>.\@Dependencies\OKC.DLL.C3MSFramework.ExceptionManager.dll</HintPath>
+    </Reference>
   </ItemGroup>
 
 </Project>
