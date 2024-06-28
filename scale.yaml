@@ -12,9 +12,17 @@ spec:
   triggers:
   - type: rabbitmq  # Replace with your event source
     metadata:
-      host:   # Environment variable with the connection string
-      username:   # RabbitMQ username
-      password:   # RabbitMQ password
+      host: amqp://production-rabbitmqcluster.default.svc.cluster.local  # Environment variable with the connection string
+      username: guest  # RabbitMQ username
+      password:
+        valueFrom:
+          secretKeyRef:
+            name: scaler-secret  # Secret name
+            key: RABBITMQ_PASSWORD  # Secret key
       port: "5672"  # RabbitMQ port
-      queueName:   # Replace with your queue name
+      queueName: 
+        valueFrom:
+          secretKeyRef:
+            name: scaler-secret
+            key: RABBITMQ_QUEUE
       queueLength: "5"  # Scale for each message

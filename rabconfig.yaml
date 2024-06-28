@@ -3,9 +3,9 @@ kind: ConfigMap
 metadata:
   name: spider-env-config
 data:
-  RABBITMQ_HOST: ""
+  RABBITMQ_HOST: "production-rabbitmqcluster.default.svc.cluster.local"
   RABBITMQ_PORT: "5672"
-  RABBITMQ_USER: ""
+  RABBITMQ_USER: "guest"
   RABBITMQ_QUEUE: ""
   IMAGE_NAME: ""
   SQL_DB: ""

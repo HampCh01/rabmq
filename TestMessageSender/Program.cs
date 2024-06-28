@@ -49,7 +49,7 @@ class Program
             Input = CreateInput(req),
             Args = new Dictionary<string, string>
             {
-                { "spiderarg2", "/Scrapy/PoliceReports/Crashdocs/Test" }
+                { "spiderarg2", "/Scrapy/PoliceReports/Crashdocs/Test/" }
             }
         };
 

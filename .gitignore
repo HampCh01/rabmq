@@ -6,3 +6,5 @@ obj
 venv
 *secret.yaml
 @dependencies
+app.config
+*.sql
